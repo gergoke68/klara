@@ -1,0 +1,34 @@
+# Docker Compose for Raspberry Pi / Remote Deployment
+# Uses pre-built image from Docker Hub
+#
+# Usage:
+#   1. Create a .env file with your credentials (copy from .env.example)
+#   2. Run: docker compose -f docker-compose.hub.yml up -d
+#   3. View logs: docker compose -f docker-compose.hub.yml logs -f
+
+services:
+  klara:
+    # Pull from Docker Hub - replace with your Docker Hub username
+    image: ${DOCKERHUB_USERNAME:-gergoke68}/klara:latest
+    container_name: klara
+    
+    # Host networking for SIP/RTP (required on Linux)
+    network_mode: host
+    
+    # Restart policy - always restart unless manually stopped
+    restart: unless-stopped
+    
+    # Environment variables from .env file
+    env_file:
+      - .env
+    
+    # Optional: mount system_instruction.txt for custom AI persona
+    volumes:
+      - ./system_instruction.txt:/app/system_instruction.txt:ro
+    
+    # Logging configuration
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

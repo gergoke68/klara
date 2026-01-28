@@ -1,0 +1,45 @@
+# Voice Assistant Gateway - Docker Compose
+# Connects 3CX PBX to Google Gemini 2.0 Flash
+
+services:
+  klara:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: klara
+    restart: unless-stopped
+    
+    # Network mode: host required for SIP/RTP traffic
+    # SIP uses UDP with dynamic ports for RTP streams
+    network_mode: host
+    
+    # Environment variables (can also use .env file)
+    environment:
+      # 3CX SIP Configuration
+      - SIP_EXTENSION=${SIP_EXTENSION}
+      - SIP_PASSWORD=${SIP_PASSWORD}
+      - SIP_SERVER=${SIP_SERVER}
+      - SIP_PORT=${SIP_PORT:-5060}
+      - SIP_TRANSPORT=${SIP_TRANSPORT:-udp}
+      
+      # Google Gemini API
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash-exp}
+      
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    
+    # Load from .env file
+    env_file:
+      - .env
+    
+    # Optional: Mount custom config or logs
+    # volumes:
+    #   - ./logs:/app/logs
+    
+    # Logging configuration
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

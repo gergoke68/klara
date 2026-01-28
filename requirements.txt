@@ -1,0 +1,15 @@
+# Voice Assistant Gateway - Dependencies
+# Note: pjsua2 must be compiled from PJSIP source (see docs/INSTALL_PJSIP.md)
+
+# Google Gemini AI SDK
+google-genai>=0.5.0
+
+# Environment variable loading
+python-dotenv>=1.0.0
+
+# Audio resampling (for Python 3.13+ compatibility, audioop was removed)
+# For Python 3.10-3.12, audioop is built-in
+audioop-lts>=0.2.1; python_version >= "3.13"
+
+# Async utilities
+asyncio-atexit>=1.0.1
