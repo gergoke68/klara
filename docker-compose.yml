@@ -3,9 +3,7 @@
 
 services:
   klara:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: gergoke68/klara:latest
     container_name: klara
     restart: unless-stopped
     
@@ -34,8 +32,8 @@ services:
       - .env
     
     # Optional: Mount custom config or logs
-    # volumes:
-    #   - ./logs:/app/logs
+    volumes:
+       - ./system_instruction.txt:/app/system_instruction.txt
     
     # Logging configuration
     logging:
