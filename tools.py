@@ -49,6 +49,22 @@ def set_reminder(text: str) -> str:
     return "Success"
 
 
+import datetime
+
+def get_current_time() -> str:
+    """
+    Get the current date and time.
+    
+    Returns:
+        The current date and time in ISO format.
+    """
+    logger.info("Tool called: get_current_time()")
+    now = datetime.datetime.now()
+    result = now.strftime("%Y-%m-%d %H:%M:%S")
+    logger.debug(f"Current time: {result}")
+    return result
+
+
 # Tool definitions for Gemini API
 # These follow the function declaration format expected by Gemini
 TOOL_DEFINITIONS = [
@@ -74,6 +90,15 @@ TOOL_DEFINITIONS = [
             },
             "required": ["text"]
         }
+    },
+    {
+        "name": "get_current_time",
+        "description": "Get the current date and time. Use this when the user asks for the time, date, or day of the week.",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+        }
     }
 ]
 
@@ -82,6 +107,7 @@ TOOL_DEFINITIONS = [
 TOOL_FUNCTIONS: dict[str, callable] = {
     "get_service_status": get_service_status,
     "set_reminder": set_reminder,
+    "get_current_time": get_current_time,
 }
 
 

@@ -5,6 +5,7 @@ Uses WebSocket-based bidirectional streaming for low-latency audio.
 
 import asyncio
 import logging
+import datetime
 from typing import Optional, Callable, Any
 
 from google import genai
@@ -48,9 +49,13 @@ class GeminiVoiceClient:
     
     def _create_live_config(self) -> dict:
         """Create the Live API configuration."""
+        # Inject current time into system instruction for context
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        system_instruction = f"{self.config.system_instruction}\n\nCurrent session start time: {current_time}"
+        
         return {
             "response_modalities": ["AUDIO"],
-            "system_instruction": self.config.system_instruction,
+            "system_instruction": system_instruction,
             "tools": [{"function_declarations": TOOL_DEFINITIONS}],
             "generation_config": {
                 "speech_config": {
@@ -190,8 +195,9 @@ class GeminiVoiceClient:
         for function_call in tool_call.function_calls:
             name = function_call.name
             args = dict(function_call.args) if function_call.args else {}
+            call_id = function_call.id  # Capture the ID
             
-            logger.info(f"Gemini requested tool call: {name}({args})")
+            logger.info(f"Gemini requested tool call: {name}({args}) [id={call_id}]")
             
             try:
                 # Execute the tool
@@ -202,6 +208,7 @@ class GeminiVoiceClient:
                     await self._session.send_tool_response(
                         function_responses=[
                             types.FunctionResponse(
+                                id=call_id,  # Include ID
                                 name=name,
                                 response={"result": result}
                             )
@@ -216,6 +223,7 @@ class GeminiVoiceClient:
                     await self._session.send_tool_response(
                         function_responses=[
                             types.FunctionResponse(
+                                id=call_id,  # Include ID
                                 name=name,
                                 response={"error": str(e)}
                             )
