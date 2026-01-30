@@ -50,7 +50,7 @@ class GeminiVoiceClient:
     def _create_live_config(self) -> dict:
         """Create the Live API configuration."""
         # Inject current time into system instruction for context
-        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_time = datetime.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
         system_instruction = f"{self.config.system_instruction}\n\nCurrent session start time: {current_time}"
         
         return {

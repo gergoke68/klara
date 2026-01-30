@@ -59,8 +59,8 @@ def get_current_time() -> str:
         The current date and time in ISO format.
     """
     logger.info("Tool called: get_current_time()")
-    now = datetime.datetime.now()
-    result = now.strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.datetime.now().astimezone()
+    result = now.strftime("%Y-%m-%d %H:%M:%S %Z")
     logger.debug(f"Current time: {result}")
     return result
 
