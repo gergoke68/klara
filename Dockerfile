@@ -96,7 +96,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY main.py config.py sip_client.py gemini_client.py audio_bridge.py tools.py system_instruction.txt ./
+COPY main.py config.py sip_client.py gemini_client.py audio_bridge.py tools.py ./
 
 # Change ownership to non-root user
 RUN chown -R klara:klara /app
